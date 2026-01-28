@@ -248,19 +248,22 @@ export default function App() {
   if (!isJoined) {
     return (
       <div className="min-h-screen bg-[#f3e5ab] flex items-center justify-center p-4">
-        <div className="bg-white p-6 sm:p-8 rounded-[30px] sm:rounded-[40px] shadow-2xl border-4 border-amber-800 w-full max-w-md">
-          <h2 className="text-2xl sm:text-3xl font-black text-amber-900 mb-4 sm:mb-6 text-center underline">LAN EDITION</h2>
+        <div className="bg-white p-6 sm:p-8 lg:p-12 rounded-[30px] sm:rounded-[40px] lg:rounded-[60px] shadow-2xl border-4 lg:border-6 border-amber-800 w-full max-w-md lg:max-w-2xl">
+          <div className="flex items-center justify-center gap-4 mb-4 sm:mb-6 lg:mb-8">
+            <img src="/logo_ueh.png" alt="UEH Logo" className="h-10 sm:h-12 lg:h-16 w-auto" />
+            <h2 className="text-2xl sm:text-3xl lg:text-5xl font-black text-amber-900 underline">Ô ĂN QUAN</h2>
+          </div>
           
-          <div className="flex justify-center gap-3 sm:gap-4 mb-5 sm:mb-6">
+          <div className="flex justify-center gap-2 sm:gap-3 lg:gap-4 mb-5 sm:mb-6 lg:mb-8 flex-wrap">
             {AVATARS.map(url => (
               <img key={url} src={url} alt="avatar" onClick={() => setUserAvatar(url)}
-                className={`w-12 h-12 sm:w-16 sm:h-16 rounded-full border-4 cursor-pointer transition-all ${userAvatar === url ? 'border-amber-600 scale-110' : 'border-transparent opacity-50'}`}
+                className={`w-12 h-12 sm:w-16 sm:h-16 lg:w-20 lg:h-20 rounded-full border-4 lg:border-6 cursor-pointer transition-all ${userAvatar === url ? 'border-amber-600 scale-110' : 'border-transparent opacity-50'}`}
               />
             ))}
           </div>
           
           <input 
-            className="w-full border-2 border-amber-200 p-3 sm:p-4 rounded-2xl mb-3 sm:mb-4 font-bold outline-none text-sm sm:text-base" 
+            className="w-full border-2 lg:border-4 border-amber-200 p-3 sm:p-4 lg:p-6 rounded-2xl lg:rounded-3xl mb-3 sm:mb-4 lg:mb-6 font-bold outline-none text-sm sm:text-base lg:text-lg" 
             placeholder="Tên của bạn..." 
             value={userName} 
             onChange={(e) => setUserName(e.target.value)} 
@@ -269,14 +272,14 @@ export default function App() {
           
           <button 
             onClick={() => { if(userName) setIsJoined(true) }} 
-            className="w-full bg-amber-800 text-white py-3 sm:py-4 rounded-2xl font-black mb-2 sm:mb-3 active:scale-95 transition-all text-sm sm:text-base"
+            className="w-full bg-amber-800 text-white py-3 sm:py-4 lg:py-6 rounded-2xl lg:rounded-3xl font-black mb-2 sm:mb-3 lg:mb-4 active:scale-95 transition-all text-sm sm:text-base lg:text-lg"
           >
             TẠO PHÒNG
           </button>
           
-          <div className="flex gap-2">
+          <div className="flex gap-2 lg:gap-3">
             <input 
-              className="flex-1 border-2 border-amber-100 p-3 sm:p-4 rounded-2xl font-bold text-sm sm:text-base" 
+              className="flex-1 border-2 lg:border-4 border-amber-100 p-3 sm:p-4 lg:p-6 rounded-2xl lg:rounded-3xl font-bold text-sm sm:text-base lg:text-lg" 
               placeholder="ID phòng..." 
               value={targetId} 
               onChange={e => setTargetId(e.target.value)}
@@ -284,32 +287,37 @@ export default function App() {
             />
             <button 
               onClick={connectToPeer} 
-              className="bg-blue-600 text-white px-4 sm:px-6 rounded-2xl font-black text-sm sm:text-base"
+              className="bg-blue-600 text-white px-4 sm:px-6 lg:px-10 py-3 sm:py-4 lg:py-6 rounded-2xl lg:rounded-3xl font-black text-sm sm:text-base lg:text-lg transition-all hover:scale-105"
             >
               VÀO
             </button>
           </div>
           
-          <p className="text-xs sm:text-sm text-gray-500 mt-4 text-center">{connectionStatus}</p>
+          <p className="text-xs sm:text-sm lg:text-base text-gray-500 mt-4 lg:mt-6 text-center">{connectionStatus}</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f3e5ab] p-3 sm:p-6 flex flex-col items-center landscape:p-2 landscape:h-screen landscape:overflow-auto">
-      {/* Header with players info */}
-      <div className="w-full max-w-5xl flex justify-between items-center mb-3 sm:mb-10 landscape:mb-2 flex-wrap gap-2 sm:gap-0">
-        <div className="flex items-center gap-2 bg-white p-1.5 sm:p-2 pr-3 sm:pr-6 rounded-full shadow border-2 border-amber-500 min-w-fit landscape:scale-90 landscape:origin-left">
-          <img src={role === 'p1' ? userAvatar : oppInfo.avatar} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="p1" />
+    <div className="min-h-screen bg-[#f3e5ab] p-3 sm:p-6 lg:p-8 flex flex-col items-center landscape:p-2 landscape:h-screen landscape:overflow-auto">
+      {/* Header with logo and players info */}
+      <div className="w-full max-w-6xl flex justify-between items-center mb-3 sm:mb-10 lg:mb-12 landscape:mb-2 flex-wrap gap-2 sm:gap-4 lg:gap-6">
+        {/* Logo */}
+        <img src="/logo_ueh.png" alt="UEH Logo" className="h-12 sm:h-16 lg:h-20 w-auto" />
+        
+        {/* P1 Info */}
+        <div className="flex items-center gap-2 lg:gap-3 bg-white p-2 sm:p-3 lg:p-4 pr-4 sm:pr-6 lg:pr-8 rounded-full shadow-lg border-2 lg:border-4 border-amber-500 min-w-fit landscape:scale-90 landscape:origin-left">
+          <img src={role === 'p1' ? userAvatar : oppInfo.avatar} className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full" alt="p1" />
           <div className="flex flex-col items-start">
-            <p className="font-black text-xs sm:text-base">{role === 'p1' ? userName : oppInfo.name}</p>
-            <p className="text-xs text-gray-600">P1: {scores.p1}đ</p>
+            <p className="font-black text-xs sm:text-base lg:text-lg">{role === 'p1' ? userName : oppInfo.name}</p>
+            <p className="text-xs lg:text-sm text-gray-600">P1: {scores.p1}đ</p>
           </div>
         </div>
         
-        <div className="flex flex-col items-center gap-1 landscape:gap-0.5">
-          <div className={`px-4 sm:px-8 py-1.5 sm:py-2 rounded-full font-black text-white shadow-lg text-xs sm:text-base landscape:scale-90 ${isP1Turn ? 'bg-amber-600' : 'bg-blue-600'}`}>
+        {/* Turn Status & Timer */}
+        <div className="flex flex-col items-center gap-1 lg:gap-2 landscape:gap-0.5">
+          <div className={`px-4 sm:px-8 lg:px-10 py-2 sm:py-2.5 lg:py-3 rounded-full font-black text-white shadow-lg text-xs sm:text-base lg:text-lg landscape:scale-90 ${isP1Turn ? 'bg-amber-600' : 'bg-blue-600'}`}>
             {isP1Turn ? "⏱️ LƯỢT P1" : "⏱️ LƯỢT P2"}
           </div>
           {(isP1Turn ? role === 'p1' : role === 'p2') && (
@@ -324,33 +332,34 @@ export default function App() {
           )}
           <button 
             onClick={() => { navigator.clipboard.writeText(myId); alert("Đã copy ID!"); }} 
-            className="text-[8px] sm:text-[10px] font-bold text-amber-800 underline hover:text-amber-600 landscape:text-[7px]"
+            className="text-[8px] sm:text-[10px] lg:text-xs font-bold text-amber-800 underline hover:text-amber-600 landscape:text-[7px]"
           >
             ID: {myId.slice(0,6)}...
           </button>
         </div>
         
-        <div className="flex items-center gap-2 bg-white p-1.5 sm:p-2 pl-3 sm:pl-6 rounded-full shadow border-2 border-blue-500 min-w-fit landscape:scale-90 landscape:origin-right">
+        {/* P2 Info */}
+        <div className="flex items-center gap-2 lg:gap-3 bg-white p-2 sm:p-3 lg:p-4 pl-4 sm:pl-6 lg:pl-8 rounded-full shadow-lg border-2 lg:border-4 border-blue-500 min-w-fit landscape:scale-90 landscape:origin-right">
           <div className="flex flex-col items-end">
-            <p className="font-black text-xs sm:text-base">{role === 'p2' ? userName : oppInfo.name}</p>
-            <p className="text-xs text-gray-600">P2: {scores.p2}đ</p>
+            <p className="font-black text-xs sm:text-base lg:text-lg">{role === 'p2' ? userName : oppInfo.name}</p>
+            <p className="text-xs lg:text-sm text-gray-600">P2: {scores.p2}đ</p>
           </div>
-          <img src={role === 'p2' ? userAvatar : oppInfo.avatar} className="w-10 h-10 sm:w-12 sm:h-12 rounded-full" alt="p2" />
+          <img src={role === 'p2' ? userAvatar : oppInfo.avatar} className="w-10 h-10 sm:w-14 sm:h-14 lg:w-16 lg:h-16 rounded-full" alt="p2" />
         </div>
       </div>
 
       {/* Game Board - LANDSCAPE OPTIMIZED */}
-      <div className="flex items-center gap-1 sm:gap-4 bg-amber-950 p-2 sm:p-10 landscape:p-2 rounded-[30px] sm:rounded-[80px] landscape:rounded-2xl shadow-2xl border-b-2 sm:border-b-[10px] landscape:border-b-2 border-black/30 overflow-auto landscape:max-h-[70vh]">
-        <div className="w-12 h-24 sm:w-24 sm:h-52 landscape:w-16 landscape:h-32 bg-amber-50 rounded-full flex items-center justify-center text-xl sm:text-5xl landscape:text-2xl font-black border-4 border-amber-800 shadow-inner flex-shrink-0">
+      <div className="flex items-center gap-1 sm:gap-4 lg:gap-6 bg-amber-950 p-2 sm:p-10 lg:p-12 landscape:p-2 rounded-[30px] sm:rounded-[80px] lg:rounded-[100px] landscape:rounded-2xl shadow-2xl border-b-2 sm:border-b-[10px] lg:border-b-[12px] landscape:border-b-2 border-black/30 overflow-auto landscape:max-h-[70vh]">
+        <div className="w-12 h-24 sm:w-24 sm:h-52 lg:w-32 lg:h-64 landscape:w-16 landscape:h-32 bg-amber-50 rounded-full flex items-center justify-center text-xl sm:text-5xl lg:text-6xl landscape:text-2xl font-black border-4 lg:border-6 border-amber-800 shadow-inner flex-shrink-0">
           <Stone count={board[11]} size="sm" />
         </div>
         
-        <div className="grid grid-cols-5 gap-1 sm:gap-4 landscape:gap-1.5 flex-shrink-0">
+        <div className="grid grid-cols-5 gap-1 sm:gap-4 lg:gap-6 landscape:gap-1.5 flex-shrink-0">
           {[10, 9, 8, 7, 6].map(i => (
             <div 
               key={i} 
               onClick={() => handleMove(i)} 
-              className={`w-12 h-12 sm:w-24 sm:h-24 landscape:w-14 landscape:h-14 rounded-lg sm:rounded-3xl landscape:rounded-2xl flex items-center justify-center text-lg sm:text-4xl landscape:text-xl font-black transition-all ${!isP1Turn && role==='p2' && !skipNextTurn ? 'bg-stone-100 scale-105 cursor-pointer hover:scale-110' : 'bg-stone-400 opacity-50 cursor-not-allowed'}`}
+              className={`w-12 h-12 sm:w-24 sm:h-24 lg:w-32 lg:h-32 landscape:w-14 landscape:h-14 rounded-lg sm:rounded-3xl lg:rounded-3xl landscape:rounded-2xl flex items-center justify-center text-lg sm:text-4xl lg:text-5xl landscape:text-xl font-black transition-all ${!isP1Turn && role==='p2' && !skipNextTurn ? 'bg-stone-100 scale-105 cursor-pointer hover:scale-110' : 'bg-stone-400 opacity-50 cursor-not-allowed'}`}
             >
               <Stone count={board[i]} size={board[i] > 10 ? 'sm' : 'md'} />
             </div>
@@ -359,20 +368,20 @@ export default function App() {
             <div 
               key={i} 
               onClick={() => handleMove(i)} 
-              className={`w-12 h-12 sm:w-24 sm:h-24 landscape:w-14 landscape:h-14 rounded-lg sm:rounded-3xl landscape:rounded-2xl flex items-center justify-center text-lg sm:text-4xl landscape:text-xl font-black transition-all ${isP1Turn && role==='p1' && !skipNextTurn ? 'bg-amber-200 scale-105 cursor-pointer hover:scale-110' : 'bg-amber-500 opacity-50 cursor-not-allowed'}`}
+              className={`w-12 h-12 sm:w-24 sm:h-24 lg:w-32 lg:h-32 landscape:w-14 landscape:h-14 rounded-lg sm:rounded-3xl lg:rounded-3xl landscape:rounded-2xl flex items-center justify-center text-lg sm:text-4xl lg:text-5xl landscape:text-xl font-black transition-all ${isP1Turn && role==='p1' && !skipNextTurn ? 'bg-amber-200 scale-105 cursor-pointer hover:scale-110' : 'bg-amber-500 opacity-50 cursor-not-allowed'}`}
             >
               <Stone count={board[i]} size={board[i] > 10 ? 'sm' : 'md'} />
             </div>
           ))}
         </div>
         
-        <div className="w-12 h-24 sm:w-24 sm:h-52 landscape:w-16 landscape:h-32 bg-amber-50 rounded-full flex items-center justify-center text-xl sm:text-5xl landscape:text-2xl font-black border-4 border-amber-800 shadow-inner flex-shrink-0">
+        <div className="w-12 h-24 sm:w-24 sm:h-52 lg:w-32 lg:h-64 landscape:w-16 landscape:h-32 bg-amber-50 rounded-full flex items-center justify-center text-xl sm:text-5xl lg:text-6xl landscape:text-2xl font-black border-4 lg:border-6 border-amber-800 shadow-inner flex-shrink-0">
           <Stone count={board[5]} size="sm" />
         </div>
       </div>
 
       {skipNextTurn && (
-        <p className="mt-2 text-red-600 font-bold text-sm sm:text-base landscape:text-xs animate-pulse">⚠️ Bị mất lượt!</p>
+        <p className="mt-2 text-red-600 font-bold text-sm sm:text-base lg:text-lg landscape:text-xs animate-pulse">⚠️ Bị mất lượt!</p>
       )}
 
       {/* Card Modal */}
@@ -397,16 +406,16 @@ export default function App() {
       {/* Game Over */}
       {gameOver && (
         <div className="fixed inset-0 bg-black/90 flex flex-col items-center justify-center z-[300] text-white p-4">
-          <h2 className="text-4xl sm:text-6xl font-black mb-3 sm:mb-4">🎉 KẾT THÚC</h2>
-          <p className="text-2xl sm:text-3xl mb-4 sm:mb-8 font-bold">
+          <h2 className="text-4xl sm:text-6xl lg:text-8xl font-black mb-3 sm:mb-4 lg:mb-6">🎉 KẾT THÚC</h2>
+          <p className="text-2xl sm:text-3xl lg:text-5xl mb-4 sm:mb-8 lg:mb-10 font-bold">
             P1: {scores.p1} - P2: {scores.p2}
           </p>
-          <p className="text-lg sm:text-2xl mb-8 font-bold">
+          <p className="text-lg sm:text-2xl lg:text-4xl mb-8 lg:mb-12 font-bold">
             {scores.p1 > scores.p2 ? '🏆 P1 THẮNG!' : scores.p2 > scores.p1 ? '🏆 P2 THẮNG!' : '🤝 HÒA!'}
           </p>
           <button 
             onClick={() => window.location.reload()} 
-            className="px-8 sm:px-12 py-3 sm:py-4 bg-amber-600 rounded-full text-lg sm:text-2xl font-black shadow-xl hover:scale-110 transition-transform"
+            className="px-8 sm:px-12 lg:px-16 py-3 sm:py-4 lg:py-6 bg-amber-600 rounded-full text-lg sm:text-2xl lg:text-3xl font-black shadow-xl hover:scale-110 transition-transform"
           >
             CHƠI LẠI
           </button>

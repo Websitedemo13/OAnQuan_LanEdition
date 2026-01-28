@@ -41,16 +41,25 @@ const CardModal: React.FC<CardModalProps> = ({ card, onConfirm }) => {
           {/* Content */}
           <div className="p-4 sm:p-8 flex flex-col items-center text-center">
             <div className="
-              w-20 h-20 sm:w-24 sm:h-24
+              w-24 h-28 sm:w-32 sm:h-40
               bg-white/20
-              rounded-full
+              rounded-lg
               flex items-center justify-center
               mb-4 sm:mb-6
               border-4 border-white
               shadow-inner
               text-4xl sm:text-6xl
+              overflow-hidden
             ">
-              {card.emoji}
+              {card.image ? (
+                <img 
+                  src={card.image} 
+                  alt={card.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span>{card.emoji}</span>
+              )}
             </div>
 
             <h3 className="text-xl sm:text-2xl font-black text-white mb-2 drop-shadow-lg">

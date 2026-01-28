@@ -5,11 +5,12 @@ export interface GameCard {
   type: 'IMMEDIATE' | 'HOLD';
   emoji: string;
   color: string;
+  image?: string;
 }
 
 export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
   IMMEDIATE: [
-    { id: 1, name: "NGON THÍIII", desc: "Ô cuối ăn được X2 (nếu lượt bốc có ăn)", type: 'IMMEDIATE', emoji: '✨', color: 'from-yellow-400 to-yellow-600' },
+    { id: 1, name: "NGON THÍIII", desc: "Ô cuối ăn được X2 (nếu lượt bốc có ăn)", type: 'IMMEDIATE', emoji: '✨', color: 'from-yellow-400 to-yellow-600', image: '/Ngon Thíiii.png' },
     { id: 2, name: "PHÁ LÀNG PHÁ XÓM", desc: "Bạn bị trừ 4 điểm", type: 'IMMEDIATE', emoji: '💥', color: 'from-red-400 to-red-600' },
     { id: 3, name: "THÊM LƯỢT", desc: "Bạn được thêm 1 lượt rải đá", type: 'IMMEDIATE', emoji: '⚡', color: 'from-blue-400 to-blue-600' },
     { id: 4, name: "CHĂM HỌC HÀNH", desc: "Bạn được cộng 2 điểm", type: 'IMMEDIATE', emoji: '📚', color: 'from-green-400 to-green-600' },
@@ -22,8 +23,8 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
     { id: 11, name: "THI TRẠNG NGUYÊN", desc: "Trả lời câu hỏi - Đúng +3, Sai -3", type: 'IMMEDIATE', emoji: '🧠', color: 'from-indigo-400 to-indigo-600' }
   ],
   HOLD: [
-    { id: 12, name: "ÔI THÔI CHỚTTT", desc: "Bẫy: đối phương bốc trúng bị trừ 5 điểm", type: 'HOLD', emoji: '🪤', color: 'from-red-500 to-red-700' },
-    { id: 13, name: "MÀI CHỚT CHƯA CON", desc: "Bẫy: đối phương bốc trúng bị trừ 3 điểm", type: 'HOLD', emoji: '⚠️', color: 'from-yellow-500 to-yellow-700' },
+    { id: 12, name: "ÔI THÔI CHỚTTT", desc: "Bẫy: đối phương bốc trúng bị trừ 5 điểm", type: 'HOLD', emoji: '🪤', color: 'from-red-500 to-red-700', image: '/Ôi Thôi Chớttt.png' },
+    { id: 13, name: "MÀI CHỚT CHƯA CON", desc: "Bẫy: đối phương bốc trúng bị trừ 3 điểm", type: 'HOLD', emoji: '⚠️', color: 'from-yellow-500 to-yellow-700', image: '/Mài Chớt Chưa Con.png' },
     { id: 14, name: "CÂU HỎI ĐẲNG CẤP", desc: "Đúng nhận 'Lật Kèo', Sai bị trừ 10 điểm", type: 'HOLD', emoji: '❓', color: 'from-orange-500 to-orange-700' },
     { id: 15, name: "LẬT KÈO", desc: "Lắc 3 lần: ≤10 không gì, >11 đổi kho", type: 'HOLD', emoji: '🎲', color: 'from-purple-500 to-purple-700' },
     { id: 16, name: "ĐẬU TÚ TÀI", desc: "Rải đều 5 đá vào 5 ô (của mình/đối phương)", type: 'HOLD', emoji: '🎯', color: 'from-green-500 to-green-700' },
