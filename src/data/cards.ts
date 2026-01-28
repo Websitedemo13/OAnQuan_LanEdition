@@ -17,7 +17,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '✨', 
       color: 'from-yellow-400 to-yellow-600', 
-      image: '/Ngon Thíiii.png' 
+      image: '/cards/1-ngon-thiiii.svg' 
     },
     { 
       id: 2, 
@@ -26,7 +26,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '💔', 
       color: 'from-red-400 to-red-600', 
-      image: '/hongnhanbacphan.png' 
+      image: '/cards/2-hong-nhan.svg' 
     },
     { 
       id: 3, 
@@ -35,7 +35,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '⚡', 
       color: 'from-blue-400 to-blue-600',
-      image: '/congidephon.png' 
+      image: '/cards/3-con-gi-dep.svg' 
     },
     { 
       id: 4, 
@@ -44,7 +44,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '💝', 
       color: 'from-green-400 to-green-600', 
-      image: '/viemxundang.png' 
+      image: '/cards/4-vi-em-xung.svg' 
     },
     { 
       id: 5, 
@@ -53,7 +53,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '🛑', 
       color: 'from-orange-400 to-orange-600', 
-      image: '/xacanu.png' 
+      image: '/cards/5-xa-ca-nu.svg' 
     },
     { 
       id: 6, 
@@ -62,7 +62,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '💧', 
       color: 'from-cyan-400 to-cyan-600', 
-      image: '/rungda.png' 
+      image: '/cards/6-rung-da.svg' 
     },
     { 
       id: 7, 
@@ -71,7 +71,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '👑', 
       color: 'from-purple-400 to-purple-600',
-      image: '/cuopquan.png' 
+      image: '/cards/7-cuop-quan.svg' 
     },
     { 
       id: 8, 
@@ -80,7 +80,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '😢', 
       color: 'from-slate-400 to-slate-600', 
-      image: '/thanhlich.png' 
+      image: '/cards/8-em-bi-tru.svg' 
     },
     { 
       id: 9, 
@@ -89,7 +89,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '🌟', 
       color: 'from-lime-400 to-lime-600', 
-      image: '/phieubengoan.png' 
+      image: '/cards/9-phieu-be-ngoan.svg' 
     },
     { 
       id: 10, 
@@ -98,7 +98,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'IMMEDIATE', 
       emoji: '😋', 
       color: 'from-pink-400 to-pink-600' ,
-      image: '/anbatchap.png' 
+      image: '/cards/10-an-bat-chap.svg' 
     }
   ],
   HOLD: [
@@ -109,7 +109,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '🪤', 
       color: 'from-red-500 to-red-700', 
-      image: '/Ôi Thôi Chớttt.png' 
+      image: '/cards/11-oi-thoi.svg' 
     },
     { 
       id: 12, 
@@ -118,7 +118,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '⚠️', 
       color: 'from-yellow-500 to-yellow-700', 
-      image: '/Mài Chớt Chưa Con.png' 
+      image: '/cards/12-mai-chot.svg' 
     },
     { 
       id: 13, 
@@ -127,7 +127,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '❓', 
       color: 'from-orange-500 to-orange-700',
-      image: '/cohoilatkeo.png' 
+      image: '/cards/13-co-hoi-lat-keo.svg' 
     },
     { 
       id: 14, 
@@ -136,7 +136,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '🎲', 
       color: 'from-purple-500 to-purple-700', 
-      image: '/duocancangathithua.png' 
+      image: '/cards/14-duoc-an-ca-nga.svg' 
     },
     { 
       id: 15, 
@@ -145,7 +145,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '🎯', 
       color: 'from-green-500 to-green-700' ,
-      image: '/nuocdihayday.png' 
+      image: '/cards/15-dau-tu-tai.svg' 
     },
     { 
       id: 16, 
@@ -154,7 +154,7 @@ export const GAME_CARDS: { IMMEDIATE: GameCard[]; HOLD: GameCard[] } = {
       type: 'HOLD', 
       emoji: '⏹️', 
       color: 'from-slate-500 to-slate-700', 
-      image: '/stop.png' 
+      image: '/cards/16-stop.svg' 
     }
   ]
 };
