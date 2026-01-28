@@ -447,8 +447,32 @@ export default function App() {
             setScores(res.newScores); 
             setCurrentCard(null);
             
-            if (currentCard.id === 5) {
+            // Xử lý các effects đặc biệt
+            if (res.skipNextTurn) {
               setSkipNextTurn(true);
+            }
+            if ((res.extraTurns || 0) > 0) {
+              // Thêm lượt - xử lý bằng cách không chuyển lượt
+              setIsP1Turn(isP1Turn); // Giữ nguyên lượt hiện tại
+            }
+            
+            // Để dành thẻ yêu cầu hành động khác
+            if (res.requiresAction && res.requiresAction !== 'NONE') {
+              // Xử lý UI riêng cho từng loại thẻ
+              switch(res.requiresAction) {
+                case 'TRAP_PLACEMENT':
+                  alert('Chọn ô để đặt bẫy (cơ năng sẽ được thêm)');
+                  break;
+                case 'DICE_ROLL':
+                  alert('Lắc xúc xắc (cơ năng sẽ được thêm)');
+                  break;
+                case 'QUESTION':
+                  alert('Trả lời câu hỏi (cơ năng sẽ được thêm)');
+                  break;
+                case 'STONE_PLACEMENT':
+                  alert('Chọn ô để rải đá (cơ năng sẽ được thêm)');
+                  break;
+              }
             }
             
             broadcastSync(res.newBoard, res.newScores, isP1Turn, null);

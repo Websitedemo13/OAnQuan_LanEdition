@@ -1,161 +1,325 @@
 import type { GameCard } from '../data/cards';
 
-type GameState = {
+export type GameState = {
   board: number[];
   scores: { p1: number; p2: number };
   isP1Turn: boolean;
+  trapCards?: { [key: number]: number }; // slot -> cardId
+  diceRolls?: number[]; // for dice games
+  cardToStore?: number; // card to be stored/used later
 };
 
-export const applyCardEffect = (card: GameCard, state: GameState) => {
+export type CardEffectResult = {
+  newBoard: number[];
+  newScores: { p1: number; p2: number };
+  skipNextTurn?: boolean;
+  extraTurns?: number;
+  requiresAction?: 'TRAP_PLACEMENT' | 'DICE_ROLL' | 'QUESTION' | 'STONE_PLACEMENT' | 'NONE';
+  actionData?: any;
+  console_log?: string;
+};
+
+/**
+ * Apply card effect and return modified game state
+ * Some effects require additional UI interaction and are marked with requiresAction
+ */
+export const applyCardEffect = (
+  card: GameCard,
+  state: GameState
+): CardEffectResult => {
   const newBoard = [...state.board];
   const newScores = { ...state.scores };
-
   const currentPlayer: 'p1' | 'p2' = state.isP1Turn ? 'p1' : 'p2';
   const opponent: 'p1' | 'p2' = state.isP1Turn ? 'p2' : 'p1';
 
+  let skipNextTurn = false;
+  let extraTurns = 0;
+  let requiresAction: CardEffectResult['requiresAction'] = 'NONE';
+  let actionData: any = null;
+  let logMsg = '';
+
   switch (card.id) {
-    case 1: { // NGON THÍIII - Ô cuối X2 nếu ăn được
-      // Logic này được xử lý trong executeMove (khi ăn)
-      // Card chỉ có tác dụng nếu người chơi ăn được ở lượt đó
-      console.log('Card NGON THÍIII được bốc - xử lý trong executeMove');
+    case 1: { // NGON THÍIII - Ô cuối ăn được X2
+      // Xử lý trong executeMove - khi ăn ô cuối, điểm được nhân 2
+      logMsg = 'Card NGON THÍIII - ô cuối ăn được sẽ X2 (xử lý trong executeMove)';
       break;
     }
 
-    case 2: { // PHÁ LÀNG PHÁ XÓM
+    case 2: { // HỒNG NHAN BẠC PHẬN - Bị trừ 4 điểm
       newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 4);
+      logMsg = `Card HỒNG NHAN BẠC PHẬN - ${currentPlayer} trừ 4 điểm`;
       break;
     }
 
-    case 3: { // THÊM LƯỢT
-      // Logic này cần được xử lý ở App.tsx (không chuyển lượt)
-      console.log('Card THÊM LƯỢT - skip turn change');
+    case 3: { // CÒN GÌ ĐẸP HƠN - Thêm 1 lượt
+      extraTurns = 1; // Player gets to play again
+      logMsg = 'Card CÒN GÌ ĐẸP HƠN - được thêm 1 lượt';
       break;
     }
 
-    case 4: { // CHĂM HỌC HÀNH
+    case 4: { // VÌ EM XỨNG ĐÁNG - Cộng 2 điểm
       newScores[currentPlayer] += 2;
+      logMsg = `Card VÌ EM XỨNG ĐÁNG - ${currentPlayer} cộng 2 điểm`;
       break;
     }
 
-    case 5: { // MẤT LƯỢT
-      // Logic này xử lý ở App.tsx (skip next turn)
-      console.log('Card MẤT LƯỢT - apply at next turn');
+    case 5: { // XÀ CÀ NU - Mất 1 lượt
+      skipNextTurn = true;
+      logMsg = `Card XÀ CÀ NU - ${currentPlayer} sẽ mất lượt tiếp theo`;
       break;
     }
 
-    case 6: { // RẢI ĐỀU 5 ĐÁ
-      const totalOppScore = newScores[opponent];
+    case 6: { // RỤNG ĐÁ - Đối phương rải 5 đá
+      // Kiểm tra kho của đối phương (tính cả thẻ điểm + đá trên bàn)
+      const oppStones = newBoard.slice(state.isP1Turn ? 6 : 0, state.isP1Turn ? 11 : 5)
+        .reduce((a, b) => a + b, 0);
+      const totalOppValue = newScores[opponent] + oppStones;
 
-      if (totalOppScore >= 9) {
-        const oppSlots = state.isP1Turn
-          ? [6, 7, 8, 9, 10]
-          : [0, 1, 2, 3, 4];
+      logMsg = `Card RỤNG ĐÁ - Kho đối phương: ${totalOppValue}`;
 
-        oppSlots.forEach(idx => newBoard[idx]++);
+      if (totalOppValue < 9) {
+        logMsg += ' (< 9, không rải)';
+        break;
+      }
 
-        // Nếu kho > 20 thì rải thêm vào 2 ô Quan
-        if (totalOppScore > 20) {
-          newBoard[5]++;
-          newBoard[11]++;
-        }
+      // Rải 5 đá vào 5 ô của đối phương
+      const oppSlots = state.isP1Turn ? [6, 7, 8, 9, 10] : [0, 1, 2, 3, 4];
+      oppSlots.forEach(idx => {
+        if (newBoard[idx] > 0) newBoard[idx]--;
+        // Đá được rải từ kho, trừ điểm
+      });
+      newScores[opponent] = Math.max(0, newScores[opponent] - 5);
+      logMsg += ' - rải 5 đá';
 
-        newScores[opponent] -= 5;
+      // Nếu kho > 20 thì rải thêm 2 ô quan mỗi ô 1 đá
+      if (totalOppValue > 20) {
+        const quanSlots = state.isP1Turn ? [5, 11] : [5, 11];
+        quanSlots.forEach(idx => {
+          if (newBoard[idx] > 0) newBoard[idx]--;
+        });
+        logMsg += ', rải thêm 2 quan';
       }
       break;
     }
 
-    case 7: { // HỒI QUAN - Lấy Quan của đối phương nếu đã ăn
-      const targetQuan = state.isP1Turn ? 5 : 11;
+    case 7: { // CƯỚP QUAN - Cướp quan của đối phương
+      const p1QuanIdx = 5;
+      const p2QuanIdx = 11;
+      const oppQuanIdx = state.isP1Turn ? p2QuanIdx : p1QuanIdx;
+      const myQuanIdx = state.isP1Turn ? p1QuanIdx : p2QuanIdx;
 
-      if (newBoard[targetQuan] === 0 && newScores[opponent] >= 10) {
-        newBoard[targetQuan] = 1;
-        newScores[opponent] -= 10;
+      if (newBoard[oppQuanIdx] > 0) {
+        // Đối phương đã ăn quan - cướp toàn bộ
+        const quanCount = newBoard[oppQuanIdx];
+        newBoard[myQuanIdx] += quanCount;
+        newBoard[oppQuanIdx] = 0;
+        logMsg = `Card CƯỚP QUAN - cướp ${quanCount} quan từ đối phương`;
+      } else {
+        // Đối phương chưa ăn quan - trừ 5 điểm
+        newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 5);
+        logMsg = 'Card CƯỚP QUAN - đối phương chưa ăn quan, trừ 5 điểm';
       }
       break;
     }
 
-    case 8: { // LƯỜI HỌC HÀNH
+    case 8: { // EM BỊ TRỪ 3 ĐIỂM - Trừ 3 điểm
       newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 3);
+      logMsg = `Card EM BỊ TRỪ 3 ĐIỂM - ${currentPlayer} trừ 3 điểm`;
       break;
     }
 
-    case 9: { // NGHÈO VƯỢT KHÓ
+    case 9: { // PHIẾU BÉ NGOAN - Cộng 5 điểm
       newScores[currentPlayer] += 5;
+      logMsg = `Card PHIẾU BÉ NGOAN - ${currentPlayer} cộng 5 điểm`;
       break;
     }
 
-    case 10: { // ĂN KẾ TIẾP
-      // Logic này xử lý ở App.tsx (ăn ô tiếp theo nếu đủ điều kiện)
-      console.log('Card ĂN KẾ TIẾP - handled in game logic');
+    case 10: { // ĂN BẤT CHẤP - Ăn ô tiếp theo
+      // Xử lý trong executeMove - ăn ô liền sau hành động rải đá
+      logMsg = 'Card ĂN BẤT CHẤP - được ăn ô kế tiếp (xử lý trong executeMove)';
       break;
     }
 
-    case 11: { // THI TRẠNG NGUYÊN
-      // Thực tế nên show câu hỏi nhưng giờ random 50%
-      const isCorrect = Math.random() > 0.5;
-      newScores[currentPlayer] += isCorrect ? 3 : -3;
-      newScores[currentPlayer] = Math.max(0, newScores[currentPlayer]);
+    case 11: { // ÔI THÔI CHỚTTT - Đặt bẫy -5 điểm
+      requiresAction = 'TRAP_PLACEMENT';
+      actionData = { trapPenalty: 5 };
+      logMsg = 'Card ÔI THÔI CHỚTTT - chọn ô để đặt bẫy (-5 điểm)';
       break;
     }
 
-    case 12: { // ÔI THÔI CHỚTTT - Bẫy trừ 5 điểm
-      // Xử lý khi đối phương bốc vào ô này
-      console.log('Card ÔI THÔI CHỚTTT - trap activated');
+    case 12: { // MÀI CHỚT CHƯA CON - Đặt bẫy -3 điểm
+      requiresAction = 'TRAP_PLACEMENT';
+      actionData = { trapPenalty: 3 };
+      logMsg = 'Card MÀI CHỚT CHƯA CON - chọn ô để đặt bẫy (-3 điểm)';
       break;
     }
 
-    case 13: { // MÀI CHỚT CHƯA CON - Bẫy trừ 3 điểm
-      // Xử lý khi đối phương bốc vào ô này
-      console.log('Card MÀI CHỚT CHƯA CON - trap activated');
+    case 13: { // CƠ HỘI LẬT KÈO - Trả lời câu hỏi
+      requiresAction = 'QUESTION';
+      actionData = { difficulty: 'HARD' };
+      logMsg = 'Card CƠ HỘI LẬT KÈO - trả lời câu hỏi (đúng +3 lượt, sai -10 điểm)';
       break;
     }
 
-    case 14: { // CÂU HỎI ĐẲNG CẤP
-      // Đúng nhận Lật Kèo, Sai trừ 10
-      const isCorrect = Math.random() > 0.5;
-      if (isCorrect) {
-        // Nhận thẻ Lật Kèo (xử lý bên ngoài)
-        console.log('Card CÂU HỎI ĐẲNG CẤP - Đúng! Nhận Lật Kèo');
-      } else {
-        newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 10);
-        console.log('Card CÂU HỎI ĐẲNG CẤP - Sai! Trừ 10 điểm');
-      }
+    case 14: { // ĐƯỢC ĂN CẢ NGÃ THÌ THUA - Lắc xúc xắc
+      requiresAction = 'DICE_ROLL';
+      actionData = { rolls: 3 };
+      logMsg = 'Card ĐƯỢC ĂN CẢ NGÃ THÌ THUA - lắc 3 lần xúc xắc';
       break;
     }
 
-    case 15: { // LẬT KÈO
-      const rolls = Array.from({ length: 3 }, () =>
-        Math.floor(Math.random() * 6) + 1
-      );
-      const total = rolls.reduce((a, b) => a + b, 0);
-
-      if (total > 11) {
-        // Đổi kho điểm
-        const temp = newScores.p1;
-        newScores.p1 = newScores.p2;
-        newScores.p2 = temp;
-        console.log(`Card LẬT KÈO - Tổng: ${total} > 11, đổi kho điểm!`);
-      } else {
-        console.log(`Card LẬT KÈO - Tổng: ${total} ≤ 11, không được gì`);
-      }
+    case 15: { // ĐẬU TÚ TÀI - Rải 5 đá
+      requiresAction = 'STONE_PLACEMENT';
+      actionData = { stoneCount: 5, canChooseTarget: true };
+      logMsg = 'Card ĐẬU TÚ TÀI - chọn ô để rải 5 đá (5 ô mình hoặc 5 ô đối phương)';
       break;
     }
 
-    case 16: { // ĐẬU TÚ TÀI
-      // Cho phép chọn rải 5 đá vào 5 ô (xử lý UI)
-      console.log('Card ĐẬU TÚ TÀI - player choose 5 slots to place');
-      break;
-    }
-
-    case 17: { // STOP
-      // Dừng tác dụng thẻ đối phương
-      console.log('Card STOP - cancel opponent card effect');
+    case 16: { // STOP - Dừng tác dụng thẻ
+      logMsg = 'Card STOP - dừng tác dụng của thẻ chức năng đối phương';
+      // Xử lý bên ngoài - cần biết thẻ nào bị hủy
       break;
     }
 
     default:
-      console.warn('Unknown card ID:', card.id);
+      logMsg = `Unknown card ID: ${card.id}`;
   }
 
-  return { newBoard, newScores };
+  return {
+    newBoard,
+    newScores,
+    skipNextTurn,
+    extraTurns,
+    requiresAction,
+    actionData,
+    console_log: logMsg
+  };
+};
+
+/**
+ * Handle dice roll result for specific cards
+ */
+export const handleDiceRollResult = (
+  cardId: number,
+  rolls: number[],
+  state: GameState
+): CardEffectResult => {
+  const newScores = { ...state.scores };
+  const newBoard = [...state.board];
+  const currentPlayer: 'p1' | 'p2' = state.isP1Turn ? 'p1' : 'p2';
+
+  const total = rolls.reduce((a, b) => a + b, 0);
+  let logMsg = `Xúc xắc: ${rolls.join(', ')} = ${total}`;
+
+  if (cardId === 14) { // ĐƯỢC ĂN CẢ NGÃ THÌ THUA
+    if (total <= 10) {
+      newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 10);
+      logMsg += ' (≤10) - trừ 10 điểm';
+    } else {
+      // Đổi kho (score swap)
+      const temp = newScores.p1;
+      newScores.p1 = newScores.p2;
+      newScores.p2 = temp;
+      logMsg += ' (>11) - đổi kho';
+    }
+  }
+
+  return {
+    newBoard,
+    newScores,
+    requiresAction: 'NONE',
+    console_log: logMsg
+  };
+};
+
+/**
+ * Handle question result
+ */
+export const handleQuestionResult = (
+  cardId: number,
+  isCorrect: boolean,
+  state: GameState
+): CardEffectResult => {
+  const newScores = { ...state.scores };
+  const newBoard = [...state.board];
+  const currentPlayer: 'p1' | 'p2' = state.isP1Turn ? 'p1' : 'p2';
+  let extraTurns = 0;
+  let logMsg = '';
+
+  if (cardId === 13) { // CƠ HỘI LẬT KÈO
+    if (isCorrect) {
+      extraTurns = 3;
+      logMsg = 'Card CƠ HỘI LẬT KÈO - ĐÚNG! Được +3 lượt';
+    } else {
+      newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - 10);
+      logMsg = 'Card CƠ HỘI LẬT KÈO - SAI! Trừ 10 điểm';
+    }
+  }
+
+  return {
+    newBoard,
+    newScores,
+    extraTurns,
+    requiresAction: 'NONE',
+    console_log: logMsg
+  };
+};
+
+/**
+ * Handle trap placement
+ */
+export const handleTrapPlacement = (
+  cardId: number,
+  slotIndex: number,
+  state: GameState
+): CardEffectResult => {
+  const newScores = { ...state.scores };
+  const newBoard = [...state.board];
+  const trapCards = { ...state.trapCards };
+
+  let penalty = 3;
+  if (cardId === 11) penalty = 5;
+
+  trapCards[slotIndex] = cardId;
+  const logMsg = `Card ${cardId === 11 ? 'ÔI THÔI CHỚTTT' : 'MÀI CHỚT CHƯA CON'} - đặt bẫy vào ô ${slotIndex} (-${penalty} điểm khi bốc)`;
+
+  return {
+    newBoard,
+    newScores,
+    requiresAction: 'NONE',
+    console_log: logMsg,
+    actionData: { trapCards }
+  };
+};
+
+/**
+ * Check if opponent landed on trap
+ */
+export const checkTrapActivation = (
+  slotIndex: number,
+  state: GameState
+): CardEffectResult => {
+  const trapCards = state.trapCards || {};
+  const newScores = { ...state.scores };
+  const newBoard = [...state.board];
+  const currentPlayer: 'p1' | 'p2' = state.isP1Turn ? 'p1' : 'p2';
+  let logMsg = '';
+
+  if (trapCards[slotIndex]) {
+    const trapCardId = trapCards[slotIndex];
+    const penalty = trapCardId === 11 ? 5 : 3;
+
+    newScores[currentPlayer] = Math.max(0, newScores[currentPlayer] - penalty);
+    delete trapCards[slotIndex];
+
+    logMsg = `Bốc vào bẫy! Trừ ${penalty} điểm`;
+  }
+
+  return {
+    newBoard,
+    newScores,
+    requiresAction: 'NONE',
+    console_log: logMsg,
+    actionData: { trapCards }
+  };
 };
